@@ -1,0 +1,348 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Unions - Unsafe Code Guidelines Reference</title>
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div id="sidebar-scrollbox" class="sidebar-scrollbox">
+                <ol class="chapter"><li class="expanded "><a href="../introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="expanded "><a href="../glossary.html"><strong aria-hidden="true">2.</strong> Glossary</a></li><li class="expanded "><a href="../layout.html"><strong aria-hidden="true">3.</strong> Data layout</a></li><li><ol class="section"><li class="expanded "><a href="../layout/structs-and-tuples.html"><strong aria-hidden="true">3.1.</strong> Structs and tuples</a></li><li class="expanded "><a href="../layout/scalars.html"><strong aria-hidden="true">3.2.</strong> Scalars</a></li><li class="expanded "><a href="../layout/enums.html"><strong aria-hidden="true">3.3.</strong> Enums</a></li><li class="expanded "><a href="../layout/unions.html" class="active"><strong aria-hidden="true">3.4.</strong> Unions</a></li><li class="expanded "><a href="../layout/pointers.html"><strong aria-hidden="true">3.5.</strong> Pointers</a></li><li class="expanded "><a href="../layout/function-pointers.html"><strong aria-hidden="true">3.6.</strong> Function pointers</a></li><li class="expanded "><a href="../layout/arrays-and-slices.html"><strong aria-hidden="true">3.7.</strong> Arrays and Slices</a></li><li class="expanded "><a href="../layout/packed-simd-vectors.html"><strong aria-hidden="true">3.8.</strong> Packed SIMD vectors</a></li></ol></li><li class="expanded "><a href="../validity.html"><strong aria-hidden="true">4.</strong> Validity</a></li><li><ol class="section"><li class="expanded "><a href="../validity/unions.html"><strong aria-hidden="true">4.1.</strong> Unions</a></li></ol></li><li class="expanded "><a href="../optimizations.html"><strong aria-hidden="true">5.</strong> Optimizations</a></li><li><ol class="section"><li class="expanded "><a href="../optimizations/return_value_optimization.html"><strong aria-hidden="true">5.1.</strong> Return value optimization</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            
+                        </div>
+
+                        <h1 class="menu-title">Unsafe Code Guidelines Reference</h1>
+
+                        <div class="right-buttons">
+                            <a href="../print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#layout-of-unions" id="layout-of-unions">Layout of unions</a></h1>
+<p><strong>Disclaimer:</strong> This chapter represents the consensus from issue
+<a href="https://github.com/rust-rfcs/unsafe-code-guidelines/issues/13">#13</a>.  The statements in here are not (yet) &quot;guaranteed&quot;
+not to change until an RFC ratifies them.</p>
+<h3><a class="header" href="#layout-of-individual-union-fields" id="layout-of-individual-union-fields">Layout of individual union fields</a></h3>
+<p>A union consists of several variants, one for each field. All variants have the
+same size and start at the same memory address, such that in memory the variants
+overlap. This can be visualized as follows:</p>
+<pre><code class="language-text">[ &lt;--&gt; [field0_ty] &lt;----&gt; ]
+[ &lt;----&gt; [field1_ty] &lt;--&gt; ]
+[ &lt;---&gt; [field2_ty] &lt;---&gt; ]
+</code></pre>
+<p><strong>Figure 1</strong> (union-field layout): Each row in the picture shows the layout of
+the union for each of its variants. The <code>&lt;-...-&gt;</code> and <code>[ ... ]</code> denote the
+differently-sized gaps and fields, respectively.</p>
+<p>The individual fields (<code>[field{i}_ty_]</code>) are blocks of fixed size determined by
+the field's <a href="../glossary.html#layout">layout</a>. Since we allow creating references to union fields
+(<code>&amp;u.i</code>), the only degrees of freedom the compiler has when computing the layout
+of a union are the size of the union, which can be larger than the size of its
+largest field, and the offset of each union field within its variant. How these
+are picked depends on certain constraints like, for example, the alignment
+requirements of the fields, the <code>#[repr]</code> attribute of the <code>union</code>, etc.</p>
+<h3><a class="header" href="#unions-with-default-layout-reprrust" id="unions-with-default-layout-reprrust">Unions with default layout (&quot;<code>repr(Rust)</code>&quot;)</a></h3>
+<p>Except for the guarantees provided below for some specific cases, the default
+layout of Rust unions is, <em>in general</em>, <strong>unspecified</strong>.</p>
+<p>That is, there are no <em>general</em> guarantees about the offset of the fields,
+whether all fields have the same offset, what the call ABI of the union is, etc.</p>
+<details><summary><b>Rationale</b></summary>
+<p>As of this writing, we want to keep the option of using non-zero offsets open
+for the future; whether this is useful depends on what exactly the
+compiler-assumed invariants about union contents are. This might become clearer
+after the <a href="https://github.com/rust-lang/unsafe-code-guidelines/issues/73">validity of unions</a> is settled.</p>
+<p>Even if the offsets happen to be all 0, there might still be differences in the
+function call ABI.  If you need to pass unions by-value across an FFI boundary,
+you have to use <code>#[repr(C)]</code>.</p>
+</details>
+<h4><a class="header" href="#layout-of-unions-with-a-single-non-zero-sized-field" id="layout-of-unions-with-a-single-non-zero-sized-field">Layout of unions with a single non-zero-sized field</a></h4>
+<p>The layout of unions with a single non-<a href="../glossary.html#zero-sized-type--zst">1-ZST</a>-field&quot; is the same as the
+layout of that field if it has no <a href="../glossary.html#padding">padding</a> bytes.</p>
+<p>For example, here:</p>
+<pre><pre class="playpen"><code class="language-rust"><span class="boring">use std::mem::{size_of, align_of};
+</span><span class="boring">#[derive(Copy, Clone)]
+</span>#[repr(transparent)]
+struct SomeStruct(i32);
+<span class="boring">#[derive(Copy, Clone)]
+</span>struct Zst;
+union U0 {
+   f0: SomeStruct,
+   f1: Zst,
+}
+<span class="boring">fn main() {
+</span><span class="boring">assert_eq!(size_of::&lt;U0&gt;(), size_of::&lt;SomeStruct&gt;());
+</span><span class="boring">assert_eq!(align_of::&lt;U0&gt;(), align_of::&lt;SomeStruct&gt;());
+</span><span class="boring">}
+</span></code></pre></pre>
+<p>the union <code>U0</code> has the same layout as <code>SomeStruct</code>, because <code>SomeStruct</code> has no
+padding bits - it is equivalent to an <code>i32</code> due to <code>repr(transparent)</code> - and
+because <code>Zst</code> is a <a href="../glossary.html#zero-sized-type--zst">1-ZST</a>.</p>
+<p>On the other hand, here:</p>
+<pre><pre class="playpen"><code class="language-rust"><span class="boring">use std::mem::{size_of, align_of};
+</span><span class="boring">#[derive(Copy, Clone)]
+</span>struct SomeOtherStruct(i32);
+<span class="boring">#[derive(Copy, Clone)]
+</span>#[repr(align(16))] struct Zst2;
+union U1 {
+   f0: SomeOtherStruct,
+   f1: Zst2,
+}
+<span class="boring">fn main() {
+</span><span class="boring">assert_eq!(size_of::&lt;U1&gt;(), align_of::&lt;Zst2&gt;());
+</span><span class="boring">assert_eq!(align_of::&lt;U1&gt;(), align_of::&lt;Zst2&gt;());
+</span>assert_eq!(align_of::&lt;Zst2&gt;(), 16);
+<span class="boring">}
+</span></code></pre></pre>
+<p>the layout of <code>U1</code> is <strong>unspecified</strong> because:</p>
+<ul>
+<li><code>Zst2</code> is not a <a href="../glossary.html#zero-sized-type--zst">1-ZST</a>, and</li>
+<li><code>SomeOtherStruct</code> has an unspecified layout and could contain padding bytes.</li>
+</ul>
+<h3><a class="header" href="#c-compatible-layout-repr-c" id="c-compatible-layout-repr-c">C-compatible layout (&quot;repr C&quot;)</a></h3>
+<p>The layout of <code>repr(C)</code> unions follows the C layout scheme. Per sections
+<a href="http://port70.net/%7Ensz/c/c11/n1570.html#6.5.8p5">6.5.8.5</a> and <a href="http://port70.net/%7Ensz/c/c11/n1570.html#6.7.2.1p16">6.7.2.1.16</a> of the C11 specification, this means that the offset
+of every field is 0. Unsafe code can cast a pointer to the union to a field type
+to obtain a pointer to any field, and vice versa. </p>
+<h4><a class="header" href="#padding" id="padding">Padding</a></h4>
+<p>Since all fields are at offset 0, <code>repr(C)</code> unions do not have padding before
+their fields. They can, however, have padding in each union variant <em>after</em> the
+field, to make all variants have the same size.</p>
+<p>Moreover, the entire union can have trailing padding, to make sure the size is a
+multiple of the alignment:</p>
+<pre><pre class="playpen"><code class="language-rust"><span class="boring">use std::mem::{size_of, align_of};
+</span>#[repr(C, align(2))]
+union U { x: u8 }
+<span class="boring">fn main() {
+</span>// The repr(align) attribute raises the alignment requirement of U to 2
+assert_eq!(align_of::&lt;U&gt;(), 2);
+// This introduces trailing padding, raising the union size to 2
+assert_eq!(size_of::&lt;U&gt;(), 2);
+<span class="boring">}
+</span></code></pre></pre>
+<blockquote>
+<p><strong>Note</strong>: Fields are overlapped instead of laid out sequentially, so 
+unlike structs there is no &quot;between the fields&quot; that could be filled 
+with padding.</p>
+</blockquote>
+<h4><a class="header" href="#zero-sized-fields" id="zero-sized-fields">Zero-sized fields</a></h4>
+<p><code>repr(C)</code> union fields of zero-size are handled in the same way as in struct
+fields, matching the behavior of GCC and Clang for unions in C when zero-sized
+types are allowed via their language extensions.</p>
+<p>That is, these fields occupy zero-size and participate in the layout computation
+of the union as usual:</p>
+<pre><pre class="playpen"><code class="language-rust"><span class="boring">use std::mem::{size_of, align_of};
+</span>#[repr(C)] 
+union U {
+  x: u8,
+  y: [u16; 0],
+}
+<span class="boring">fn main() {
+</span>// The zero-sized type [u16; 0] raises the alignment requirement to 2
+assert_eq!(align_of::&lt;U&gt;(), 2);
+// This in turn introduces trailing padding, raising the union size to 2
+assert_eq!(size_of::&lt;U&gt;(), 2);
+<span class="boring">}
+</span></code></pre></pre>
+<p><strong>C++ compatibility hazard</strong>: C++ does, in general, give a size of 1 to types
+with no fields. When such types are used as an union field in C++, a &quot;naive&quot;
+translation of that code into Rust will not produce a compatible result. Refer
+to the <a href="structs-and-tuples.html#c-compatible-layout-repr-c">struct chapter</a> for
+further details.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="../layout/enums.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="../layout/pointers.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a href="../layout/enums.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a href="../layout/pointers.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+        
+        
+        <script type="text/javascript">
+            window.playpen_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>
